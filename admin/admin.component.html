@@ -1,0 +1,67 @@
+<div class="admin-container">
+  <h1>Administration</h1>
+  <div class="admin-actions">
+    <button (click)="openElectionPeriodForm()">Ouvrir la période de parrainage</button>
+    <button (click)="importVoters()">Importer la liste des électeurs</button>
+    <button (click)="viewCandidates()">Voir candidats</button>
+    <button (click)="monitorSponsorships()">Suivre parrainage</button>
+  </div>
+
+  <div *ngIf="showElectionPeriodForm" class="election-period-form">
+    <h2>Définir la période de parrainage</h2>
+    <form (ngSubmit)="setElectionPeriod()">
+      <label for="startDate">Date début :</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate" name="startDate" required>
+
+      <label for="endDate">Date de fin :</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate" name="endDate" required>
+
+      <button type="submit">Enregistrer</button>
+    </form>
+  </div>
+</div>
+
+<div class="import-voters">
+    <h2>Importer la liste des électeurs</h2>
+    <input type="file" (change)="onFileSelected($event)" accept=".csv">
+    <button (click)="importVoters()">Importer</button>
+    <p *ngIf="uploadError" class="error">{{ uploadError }}</p>
+</div>
+
+<div class="candidate-management">
+    <h2>Gestion des candidats</h2>
+    <form (ngSubmit)="addCandidate()">
+      <label for="name">Nom :</label>
+      <input type="text" id="name" [(ngModel)]="newCandidate.name" name="name" required>
+  
+      <label for="party">Parti politique :</label>
+      <input type="text" id="party" [(ngModel)]="newCandidate.party" name="party" required>
+  
+      <button type="submit">Ajouter</button>
+    </form>
+    <p *ngIf="candidateError" class="error">{{ candidateError }}</p>
+  
+    <h3>Liste des candidats</h3>
+    <ul>
+      <li *ngFor="let candidate of candidates; let i = index">
+        {{ candidate.name }} ({{ candidate.party }})
+        <button (click)="deleteCandidate(i)">Supprimer</button>
+      </li>
+    </ul>
+</div>
+
+<div class="sponsorship-monitoring">
+    <h2>Suivi des parrainages</h2>
+    <button (click)="monitorSponsorships()">Actualiser</button>
+  
+    <h3>Statistiques</h3>
+    <p>Total des parrainages : {{ sponsorshipStats.total }}</p>
+    <p>Maximum de parrainages : {{ sponsorshipStats.max }}</p>
+  
+    <h3>Détails par candidat</h3>
+    <ul>
+      <li *ngFor="let sponsorship of sponsorships">
+        {{ sponsorship.candidate }} : {{ sponsorship.count }} parrainages
+      </li>
+    </ul>
+</div>
